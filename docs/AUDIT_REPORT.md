@@ -57,6 +57,6 @@ Status in this file is updated at the end of repository preparation.
 - Secret scan: `PASS` — no credential-shaped value found. Keyword-only hits were explanatory prose and a local variable named `token`.
 - Files above reasonable binary size: `PASS` — none above 1 MiB and no committed model/data binary.
 - Repository size before `.git`: approximately 0.46 MB.
-- Git status: `PENDING FINAL REMOTE COMMIT`.
-- Private GitHub repository: `PENDING AUTHENTICATION`.
+- Git status: `CLEAN` after the final audit commit.
+- Private GitHub repository: `https://github.com/gbh-9/oqe-v23-reproduction` (`PRIVATE`, verified with the GitHub API).
 - Camera-ready public release candidate: **NO** until the license is selected and final verification items above pass.
