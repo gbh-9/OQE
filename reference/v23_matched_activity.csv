@@ -1,0 +1,5 @@
+dataset,single_tail_spike_rate,oqe_tail_spike_rate,oqe_to_single_ratio
+fashion_mnist,0.07184,0.24990,3.4780066815
+kmnist,0.04638,0.16228,3.4980595084
+cifar10,0.14363,0.50610,3.5236371232
+cifar100,0.14321,0.50331,3.514210459

@@ -1,0 +1,6 @@
+numpy==2.1.0
+torch==2.7.1
+torchvision==0.22.1
+spikingjelly==0.0.0.0.14
+matplotlib==3.10.0
+pytest==8.3.4

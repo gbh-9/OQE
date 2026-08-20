@@ -1,0 +1,8 @@
+dataset: kmnist
+k: 7
+anchors: 2
+epochs: 3
+batch_size: 128
+seeds: [20261010, 20261011, 20261012]
+arms: [direct, rate, latency, single_hybrid, oqe]
+thresholds: fixed_training_quantiles_excluding_zero
