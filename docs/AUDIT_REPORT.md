@@ -1,85 +1,49 @@
-# OQE V23 release audit
+# Validation and reproducibility
 
-## Camera-ready synchronization addendum (2026-10-30)
+## Checked implementation
 
-The sections below retain the original V23 release audit. This additive update
-introduces the camera-ready benchmark and small timing/deletion evidence, not
-new training or a replacement of V23 results. In particular, the earlier exclusion
-of all raw timing samples no longer applies to the new cohort.
+The lightweight test suite covers codebook geometry, matched non-nested controls,
+grouped-current reconstruction, and encoding-specific anchor/deletion behavior.
 
-- Existing structural test suite: **19 passed**.
-- New benchmark CLI import/help check: **passed**; no inference/training rerun.
-- Portable table generator: **passed**; generated `deployment.tex` matches the
-  frozen camera-ready table (text comparison).
-- Benchmark source: byte-identical to the measured script; SHA256
-  `b9bd94fbd08da9b86eb14468c4e771bb57581763cb56ed7df8d35957c60df8c0`.
-- Core model and executor sources match the research workspace; no changes made.
-- Working-tree credential/private-key and machine-path pattern scan: no matches
-  in release content. No new datasets, checkpoint binaries, PDFs, or ZIPs included.
-  This is a scoped packaging check, not a new independent research audit.
-- Repository visibility verified PRIVATE before sync; this operation does not
-  authorize or perform a visibility change. `LICENSE_PENDING.md` remains unchanged.
-- See `docs/CAMERA_READY.md` for the current evidence and reproduction commands.
+```bash
+python -m pytest
+```
 
-## Original V23 audit
+The latest execution completed **19 tests successfully**. The deployment benchmark
+CLI also passed its import/help check. The table generator reproduced the frozen
+paper table without a training or timing rerun.
 
-Status in this file is updated at the end of repository preparation.
+## Evidence levels
 
-## Scope scanned
+| Artifact | What it supports |
+|---|---|
+| Structural tests | Codebook and executor invariants on specified test cases |
+| Main reference summaries | Reported three-seed classification comparisons |
+| Timing samples and metadata | Measured stage/full-forward performance under the recorded protocol |
+| 12 matched-batch equivalence checks | Identical predictions and final rates for the tested batches, not a new full-test evaluation |
 
-- Source development directories: `src/`, `scripts/`, and relevant `tests/`.
-- Validated result summaries under `results/oqe_v6_main`, `results/oqe_v6_nestedness`, `results/oqe_v6_event_loss`, `results/oqe_anchor_erasure_corrected`, and `results/oqe_v18_followup`.
-- The V23 manuscript PDF was inspected as the reporting source; it is not copied into the repository.
+Reconstruction equivalence is distinct from an end-to-end speedup. Likewise,
+symbol-level deletion behavior and downstream classification accuracy are reported
+separately. See [Results](RESULTS.md) and the [execution protocol](CAMERA_READY.md).
 
-## Retained
+## Reproducing results
 
-- Final OQE V6 codebooks, matched SNN, route grouping, generic reconstruction, and suffix reconstruction.
-- Main four-dataset training/evaluation runner and frozen breadth-study runner.
-- Materialized-tail event deletion, corrected anchor erasure, non-nested control, anchor-count training, executor audits, and benchmark runner.
-- Lightweight structural tests, protocol manifests, documentation, and small V23 aggregate reference tables.
+Tests and reference-table generation run without model checkpoints. Full training,
+deletion evaluation, and frozen-model inference use the public datasets and the
+checkpoint paths documented in [Reproduction](REPRODUCTION.md). Original checkpoint
+binaries are not bundled, so the exact original model weights cannot be recovered
+from the summaries alone.
 
-## Intentionally excluded
+Core model and executor sources were unchanged during the deployment update.
+The benchmark metadata records source, input, and checkpoint hashes. Recorded
+measurements and historical reference files are preserved rather than replaced by
+new runs.
 
-- All datasets, model checkpoints, experiment log dumps, profiler traces, caches, generated figures, manuscript sources/PDFs, environment dumps, and the original Git history.
-- Historical TA-OQE exploratory branches unrelated to V23.
-- `scripts/run_oqe_v12_anchor_ablation.py` and its old anchor result artifacts. Its evaluator incorrectly reused an OQE `k→k-1` shortcut for Matched Single-Spike. Only the unaffected anchor model construction/training logic was extracted into clean release modules; the corrected evaluator materializes and decodes each corrupted representation.
+## Packaging checks
 
-## Protocol and result checks
+The synchronization checks found no credential-pattern or private-machine-path
+matches in release content and no included datasets or checkpoint binaries.
+These are scoped packaging checks, not a security guarantee or an independent
+raw-data audit. License selection remains an author decision.
 
-- Main aggregate facts match V23: Direct is best on all four datasets; mean Matched Single-Spike accuracy exceeds mean OQE accuracy on all four.
-- Checked anchor-free reference means match V23: Fashion-MNIST OQE/Single `88.530/86.347`, KMNIST `91.073/88.793`, CIFAR-10 `72.990/73.090` percent, with paired differences `+2.183`, `+2.280`, and `-0.100` pp and directions `3/0/0`, `3/0/0`, and `1/0/2`.
-- The OQE and Matched Single-Spike release paths share thresholds, ordinal class, tail length, anchors, total step budget, route key, backbone, optimizer, training budget, and seeds in the matched main protocol.
-- Generic and suffix reconstruction target identical tail currents. For `K=7`, the post-grouping accounting is 36 generic coefficient incidences versus one initialization plus five additions.
-- No paper number was overwritten and no manuscript file was changed.
-
-## Known inconsistencies and limits
-
-- The benchmark runner's V23 GPU branch implements 5 warm-ups and 20 repetitions. Its CPU branch uses 1 warm-up and 5 repetitions; this is disclosed in `REPRODUCTION.md` and must not be described as the GPU protocol.
-- The checked-in benchmark CSV records median, mean, population standard deviation, and repetition count, but not IQR/min/max fields. V23 protocol documentation states that those secondary statistics were retained; reproducing those fields requires retaining raw timing samples or extending reporting without changing the timed operation.
-- Full result regeneration requires public datasets and long training. Checkpoints are deliberately excluded, so deletion/executor inference cannot run directly from a fresh clone before training.
-- `LICENSE_PENDING.md` is deliberate: public release is blocked until the authors select a license.
-
-## Privacy and security
-
-- Release source/docs/configs contain no author name, institution, laboratory, email address, machine username, hostname, IP address, SSH/SLURM account, API key, access token, password, W&B identity, or hard-coded absolute dataset/checkpoint path.
-- Paths in runnable code are derived from the repository root.
-- The required private repository URL is operational metadata and will be recorded below after creation.
-
-## Reproducibility classification
-
-- Direct without retraining: structural/unit tests, codebook checks, reconstruction equivalence on synthetic tensors, protocol/reference-table inspection.
-- Requires public dataset download and training: main clean, anchor-free, anchor-count, and non-nested model results.
-- Requires generated checkpoints: event deletion, corrected anchor erasure, full executor equivalence, and checkpoint-backed benchmark/audit paths.
-- Not reconstructable from checked-in files alone: the exact original per-run model weights and raw timing samples, intentionally omitted for size/privacy and clean-release requirements.
-
-## Final verification
-
-- Lightweight tests: `PASS` — 19 passed.
-- Python imports/CLI syntax checks: `PASS` — core imports, Python compilation, nine CLI help paths, and five shell wrappers checked.
-- Identity/absolute-path scan: `PASS` — no identity record or machine absolute path found. The GitHub URL field remains pending.
-- Secret scan: `PASS` — no credential-shaped value found. Keyword-only hits were explanatory prose and a local variable named `token`.
-- Files above reasonable binary size: `PASS` — none above 1 MiB and no committed model/data binary.
-- Repository size before `.git`: approximately 0.46 MB.
-- Git status: `CLEAN` after the final audit commit.
-- Private GitHub repository: `https://github.com/gbh-9/oqe-v23-reproduction` (`PRIVATE`, verified with the GitHub API).
-- Camera-ready public release candidate: **NO** until the license is selected and final verification items above pass.
+Detailed dated records are retained in [release history](history/release_notes_20261030.md).

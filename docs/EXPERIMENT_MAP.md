@@ -1,4 +1,4 @@
-# V23 paper-to-code map
+# Paper-to-code map
 
 All principal training results use seeds `20261010`, `20261011`, and `20261012`. YAML files are readable protocol manifests; CLI arguments shown below are the executable configuration interface.
 
@@ -25,7 +25,7 @@ All principal training results use seeds `20261010`, `20261011`, and `20261012`.
 
 ## Key implementation locations
 
-Camera-ready Table VI supersedes the historical deployment timings above with
+The joint deployment table uses the matched five-path measurements from
 `scripts/benchmark_oqe_camera_ready.py`: five paths in one matched session,
 CPU/GPU, batches 1/128, reconstruction/full-forward latency, and separate GPU
 incremental allocation. `scripts/summarize_camera_ready.py` rebuilds the table

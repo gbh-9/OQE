@@ -1,4 +1,4 @@
-name: oqe-v23
+name: oqe
 channels:
   - pytorch
   - nvidia

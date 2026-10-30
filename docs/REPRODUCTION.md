@@ -1,8 +1,9 @@
 # Reproduction guide
 
-For the camera-ready five-path deployment comparison and new table, follow
-[CAMERA_READY.md](CAMERA_READY.md). The benchmark commands below retain the V23
-protocol; historical timing files are not combined with the new cohort.
+For the five-path deployment comparison and joint table, follow
+[the execution benchmark guide](CAMERA_READY.md). The stage/scaling commands below
+retain their original protocol; historical timing files are not combined with the
+matched five-path cohort.
 
 ## Environment
 
@@ -16,9 +17,17 @@ Install the dependencies from the repository root. `requirements.txt` lists only
 | Precision | FP32 |
 | Mode | `model.eval()` and `torch.no_grad()` |
 
-For the **GPU timing protocol**, use five warm-up runs, then 20 timed repetitions. Timing uses `time.perf_counter()`. CUDA is synchronized once after warm-up and after every timed call. The primary statistic is the median; retained secondary statistics are mean, population standard deviation, IQR, minimum, and maximum. Batch sizes are 1 and 128.
+For the **GPU timing protocol**, use five warm-up runs, then 20 timed repetitions.
+Timing uses `time.perf_counter()` with CUDA synchronization at measurement boundaries.
+Summary CSVs report median, mean, and population standard deviation. The matched
+five-path benchmark also retains raw repetitions, from which IQR, minimum, and
+maximum can be calculated. Batch sizes are 1 and 128.
 
-The checked-in validated runner records median, mean, population standard deviation, and repetition count in its CSV output. The V23 aggregate tables were produced from the frozen result cohort; do not replace those numbers with a later protocol-verification rerun. The runner's CPU branch historically uses one warm-up and five repetitions, whereas the GPU branch implements the V23 GPU protocol above.
+The stage/scaling runner records median, mean, population standard deviation, and
+repetition count in its CSV output. The matched five-path runner additionally retains
+all timing samples. CPU measurements use one warm-up and five repetitions; GPU
+measurements use five warm-ups and 20 repetitions. Keep new runs separate from the
+frozen paper references.
 
 ## Dataset layout
 
@@ -101,4 +110,8 @@ Run `python scripts/benchmark_oqe_v6_suffix.py --help` and `python scripts/audit
 
 ## Sanity references
 
-The `reference/` directory contains small V23 aggregate CSV/JSON files. It intentionally omits per-run logs and checkpoint tensors. Their purpose is to confirm the expected cohort and reported summaries, not to bypass training.
+The `reference/` directory contains frozen aggregate CSV/JSON files and the matched
+deployment timing samples. It omits training logs and checkpoint tensors. These
+files allow table regeneration and comparison with reported results; checkpoint
+inference still requires trained weights. Original artifact identifiers are
+retained for provenance.

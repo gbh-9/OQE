@@ -1,103 +1,144 @@
-# OQE reproduction repository (V23 + camera-ready update)
+# OQE: Ordered Temporal Coding for SNN Inputs
 
-OQE is an ordinal temporal input representation for SNNs that retains the encoder-produced ordinal key for exact route grouping and uses nested temporal supports to enable suffix reconstruction.
+### Exact Route Grouping and Suffix Reconstruction
 
-This repository accompanies manuscript V23 and its camera-ready revision, *OQE: Ordered Temporal Coding for SNN Inputs with Exact Route Grouping and Suffix Reconstruction*. It is a clean reproduction tree: datasets, checkpoints, training logs, development history, and superseded implementations are intentionally absent. The camera-ready update retains the small raw timing samples needed to reproduce the deployment summary.
+Official implementation of **OQE: Ordered Temporal Coding for SNN Inputs with Exact Route Grouping and Suffix Reconstruction**, accepted at **IEEE MSN 2026**.
 
-## Camera-ready update (2026-10-30)
+[Reproduction guide](docs/REPRODUCTION.md) · [Results](docs/RESULTS.md) · [Execution benchmarks](docs/CAMERA_READY.md) · [Experiment map](docs/EXPERIMENT_MAP.md)
 
-The update adds a matched five-path CPU/GPU benchmark, incremental GPU allocation,
-all timing repetitions, batch-level equivalence checks, deletion summaries, and a
-portable generator for the joint deployment table. No models were retrained or
-original V23 reference files replaced. See the [camera-ready guide](docs/CAMERA_READY.md).
+## Overview
 
-Regenerate the joint table from checked-in measurements (Python standard library only):
+OQE connects a temporal input representation to its execution. Each input scalar
+is mapped to an ordinal key and a cumulative binary spike word. Routes sharing
+the same key can be grouped exactly, and the nested temporal supports allow
+first-layer currents to be reconstructed with a suffix scan.
+
+![OQE encoding, ordinary inference, and grouped execution paths](docs/assets/method_overview.png)
+
+*Overview with a K = 7 example. The two-anchor interface is shown; anchor-free
+and one-anchor configurations are also evaluated. [Vector figure](docs/assets/method_overview.pdf).*
+
+The repository includes:
+
+- **Ordered temporal coding:** ordinal-key construction and cumulative spike words.
+- **Exact route grouping:** generic and suffix-based first-layer current reconstruction.
+- **Matched controls:** direct, rate, latency, single-spike, and non-nested encodings.
+- **Reproducible evaluation:** four image datasets, anchor ablations, event deletion,
+  numerical-equivalence tests, and CPU/GPU deployment measurements.
+
+The suffix scan reduces post-grouping reconstruction work from quadratic to linear
+in codebook size. The measured implementation accelerates this reconstruction
+stage; complete grouped forwarding still includes key preparation and aggregation
+overhead and is not faster than ordinary forwarding. See the
+[deployment results](docs/RESULTS.md#execution) for both measurements.
+
+## Main results
+
+Clean test accuracy (%), mean ± population standard deviation over three seeds.
+The main protocol uses two analog anchors and six tail steps for OQE and Matched
+Single-Spike (K = 7). Accuracy is evaluated with ordinary forwarding.
+
+| Dataset | Direct | Rate | Latency | Matched Single-Spike | OQE |
+|---|---:|---:|---:|---:|---:|
+| Fashion-MNIST | 89.71 ± 0.09 | 86.72 ± 0.27 | 87.97 ± 0.10 | 89.37 ± 0.14 | 89.09 ± 0.23 |
+| KMNIST | 91.44 ± 0.34 | 90.81 ± 0.41 | 89.48 ± 0.17 | 91.24 ± 0.33 | 91.14 ± 0.44 |
+| CIFAR-10 | 79.05 ± 0.07 | 66.64 ± 0.15 | 73.94 ± 0.14 | 77.84 ± 0.31 | 76.76 ± 0.25 |
+| CIFAR-100 | 45.35 ± 0.28 | 26.99 ± 0.54 | 32.22 ± 1.79 | 38.52 ± 0.70 | 38.18 ± 0.83 |
+
+The anchor-free comparison provides a different trade-off: OQE improves mean
+accuracy over the matched single-spike control by 2.18 pp on Fashion-MNIST and
+2.28 pp on KMNIST, with a −0.10 pp difference on CIFAR-10. Full comparisons,
+activity costs, and timing boundaries are in [Results](docs/RESULTS.md).
+
+## Quick start
+
+### 1. Install
+
+Python 3.11 is recommended for installation. Run commands from the repository root.
+
+```bash
+git clone https://github.com/gbh-9/oqe-v23-reproduction.git oqe
+cd oqe
+python -m venv .venv
+```
+
+Activate the environment with `source .venv/bin/activate` on Linux/macOS or
+`.\.venv\Scripts\Activate.ps1` in Windows PowerShell, then install:
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+The recorded GPU benchmarks used PyTorch 2.7.1+cu118, CUDA 11.8, and an NVIDIA
+GeForce RTX 4060 Laptop GPU. Match the recorded environment when comparing
+absolute timing; see the [benchmark protocol](docs/CAMERA_READY.md).
+
+### 2. Run a lightweight check
+
+```bash
+python -m pytest
+```
+
+To rebuild the joint accuracy/activity/runtime table from the included measurements:
 
 ```bash
 python scripts/summarize_camera_ready.py
 ```
 
-Code is currently maintained in a private repository. A license has not yet been
-selected; see [LICENSE_PENDING.md](LICENSE_PENDING.md). No open-source license is
-implied by repository visibility.
+Table generation uses only the Python standard library and needs no GPU, dataset,
+or trained checkpoint. Outputs are written to `results/camera_ready_tables/`;
+use `--output-dir` with a new directory for subsequent runs.
 
-## Novelty boundary
-
-- The cumulative/thermometer representation itself is not claimed as new.
-- Exact grouping by a deterministic class key is not unique to OQE.
-- The OQE-specific structure is the combination of ordinal temporal realization, retained route key, and nested-support suffix reconstruction.
-
-The current prototype demonstrates an isolated reconstruction opportunity rather than an end-to-end acceleration. Its complexity reduction applies to **post-grouping class-time reconstruction, after the class aggregates `A_k` have been formed**. For `K=7`, generic reconstruction has 36 class-time coefficient incidences; suffix reconstruction uses one boundary initialization and five vector additions. The ordinal-key lower bound is 3 bits per scalar, while the current prototype may store keys as `int64`; 3 bits is not a measured memory footprint.
-
-## Install
-
-Python 3.11 is recommended.
-
-```bash
-python -m venv .venv
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-```
-
-The paper GPU timing environment was PyTorch `2.7.1+cu118`, CUDA runtime `11.8`, and an NVIDIA GeForce RTX 4060 Laptop GPU. Ordinary training can use another compatible PyTorch build; timing comparison should use the recorded environment.
-
-## Prepare datasets
+### 3. Prepare data and train
 
 ```bash
 python scripts/prepare_datasets.py
+python scripts/run_oqe_v6_main.py --dataset fashion_mnist --arm oqe --seed 20261010
 ```
 
-This downloads Fashion-MNIST, KMNIST, CIFAR-10, and CIFAR-100 under `data/`. Training scripts deliberately use `download=False` after preparation.
-
-## Reproduce
-
-Main clean experiment, all four datasets and five arms:
+For the complete main comparison, including the non-nested control:
 
 ```bash
 python scripts/run_oqe_v6_main.py --dataset all --arm all --include-non-nested
 python scripts/summarize_oqe_v6.py
 ```
 
-Anchor-free and 0/1/2-anchor models:
+Datasets are downloaded under `data/`; generated checkpoints and results are
+written under `results/`. Checkpoints are not bundled. Deletion studies and
+full-forward benchmarks require the corresponding trained checkpoints.
 
-```bash
-python scripts/run_oqe_anchor_models.py
-python scripts/run_oqe_v18_zero_anchor.py --phase all
-python scripts/run_oqe_anchor_erasure_corrected.py
+## Reproduction guide
+
+| Task | Instructions |
+|---|---|
+| Main classification experiments and dataset setup | [Reproduction](docs/REPRODUCTION.md) |
+| Anchor counts, temporal order, codebook size, and event deletion | [Experiment map](docs/EXPERIMENT_MAP.md) |
+| Five-path inference timing and GPU allocation | [Execution benchmarks](docs/CAMERA_READY.md) |
+| Reported results and their source files | [Results](docs/RESULTS.md) |
+| Structural checks and release verification | [Validation](docs/AUDIT_REPORT.md) |
+
+## Repository structure
+
+```text
+src/         Encoders, matched SNN models, and grouped executors
+scripts/     Dataset preparation, training, evaluation, and table generation
+configs/     Readable experiment protocol manifests
+reference/   Frozen numerical results and measured timing samples
+tests/       Structural and numerical consistency tests
+docs/        Reproduction guides, result tables, and method figures
 ```
 
-Independent and exactly-one-event deletion from trained checkpoints:
+Some filenames retain experiment identifiers for compatibility with recorded
+checkpoints and commands; they are provenance labels, not separate paper versions.
+YAML manifests document the protocols; the CLI runners are the executable interface.
 
-```bash
-python scripts/run_oqe_v6_event_loss.py
-python scripts/run_oqe_v12_followup.py
-```
+## Citation
 
-Generic versus suffix reconstruction and complete-forward benchmarks:
+If you use this implementation, please cite **OQE: Ordered Temporal Coding for
+SNN Inputs with Exact Route Grouping and Suffix Reconstruction**, IEEE MSN 2026.
+The complete bibliographic entry will accompany the proceedings record.
 
-```bash
-python scripts/benchmark_oqe_v6_suffix.py --mode microbench
-python scripts/benchmark_oqe_v6_suffix.py --mode full
-```
+## License
 
-FP32/FP64 numerical-equivalence audit:
-
-```bash
-python scripts/audit_oqe_v6_suffix_executor.py
-```
-
-Lightweight structural tests (no training):
-
-```bash
-python -m pytest
-```
-
-See [reproduction details](docs/REPRODUCTION.md), the [paper-to-code map](docs/EXPERIMENT_MAP.md), and the [release audit](docs/AUDIT_REPORT.md). The YAML files under `configs/` are protocol manifests for readers; the validated CLI runners remain the executable source of truth.
-
-## Known scope
-
-- Clean and anchor studies use three fixed seeds and dataset-specific training budgets.
-- The matched OQE/Single-Spike controls share thresholds, ordinal classes, tail length, anchors, total step budget, route key, backbone, optimizer, training budget, and seed protocol.
-- Benchmark results isolate reconstruction after route grouping; complete-forward measurements do not show end-to-end speedup.
-- Reference CSV/JSON files are small immutable summaries for sanity checking, not substitutes for checkpoints or raw datasets.
-- No claim is made that OQE is universally more accurate, faster, or carries more ordinal information than Matched Single-Spike.
+License terms are awaiting author approval; see [LICENSE_PENDING.md](LICENSE_PENDING.md).

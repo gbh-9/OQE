@@ -1,8 +1,8 @@
-# Camera-ready reproduction update
+# Execution benchmarks and joint deployment table
 
-Updated 2026-10-30. The original V23 code and reference summaries are preserved.
-This update adds the frozen-model measurements used in camera-ready Table VI;
-it does not add training or claim end-to-end acceleration.
+This guide covers the frozen-model measurements used in the paper's joint
+deployment table: accuracy, event activity, reconstruction time, complete-forward
+time, key storage, and incremental GPU allocation.
 
 ## Rebuild the table without training
 
@@ -90,6 +90,6 @@ settings, but full grouped forwarding remains slower than ordinary forwarding.
 The camera-ready results do not support an end-to-end speedup. Existing deletion
 results must retain their native-corruption/decoder/anchor boundaries.
 
-No datasets, checkpoints, manuscript PDFs/sources, credentials, or private machine
-paths are included in this update. Repository visibility is not changed by this
-sync. The authors still need to choose a license before the intended public release.
+The benchmark evidence does not include datasets or model checkpoints. The main
+training commands above reproduce the required model configurations; the recorded
+source and checkpoint hashes identify the original measurement cohort.
