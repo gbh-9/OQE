@@ -1,0 +1,3 @@
+encoding,ordinary_clean_accuracy_percent,ordinary_clean_population_std_pp,tail_events_per_scalar,int64_input_key_bytes_B128,packed_3bit_key_bound_bytes_B128
+oqe,89.08666666666667,0.23471022323044996,1.4993979591836735,802816,37632
+single_hybrid,89.37,0.14165686240583375,0.4310405612244898,802816,37632

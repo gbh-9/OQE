@@ -1,5 +1,28 @@
 # OQE V23 release audit
 
+## Camera-ready synchronization addendum (2026-10-30)
+
+The sections below retain the original V23 release audit. This additive update
+introduces the camera-ready benchmark and small timing/deletion evidence, not
+new training or a replacement of V23 results. In particular, the earlier exclusion
+of all raw timing samples no longer applies to the new cohort.
+
+- Existing structural test suite: **19 passed**.
+- New benchmark CLI import/help check: **passed**; no inference/training rerun.
+- Portable table generator: **passed**; generated `deployment.tex` matches the
+  frozen camera-ready table (text comparison).
+- Benchmark source: byte-identical to the measured script; SHA256
+  `b9bd94fbd08da9b86eb14468c4e771bb57581763cb56ed7df8d35957c60df8c0`.
+- Core model and executor sources match the research workspace; no changes made.
+- Working-tree credential/private-key and machine-path pattern scan: no matches
+  in release content. No new datasets, checkpoint binaries, PDFs, or ZIPs included.
+  This is a scoped packaging check, not a new independent research audit.
+- Repository visibility verified PRIVATE before sync; this operation does not
+  authorize or perform a visibility change. `LICENSE_PENDING.md` remains unchanged.
+- See `docs/CAMERA_READY.md` for the current evidence and reproduction commands.
+
+## Original V23 audit
+
 Status in this file is updated at the end of repository preparation.
 
 ## Scope scanned

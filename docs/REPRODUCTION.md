@@ -1,5 +1,9 @@
 # Reproduction guide
 
+For the camera-ready five-path deployment comparison and new table, follow
+[CAMERA_READY.md](CAMERA_READY.md). The benchmark commands below retain the V23
+protocol; historical timing files are not combined with the new cohort.
+
 ## Environment
 
 Install the dependencies from the repository root. `requirements.txt` lists only direct runtime/test dependencies. The manuscript timing environment was:

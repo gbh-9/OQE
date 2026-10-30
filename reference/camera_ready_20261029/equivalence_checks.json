@@ -1,0 +1,86 @@
+[
+  {
+    "device": "cpu",
+    "batch": 1,
+    "method": "oqe_generic",
+    "prediction_mismatches": 0,
+    "rate_max_abs": 0.0
+  },
+  {
+    "device": "cpu",
+    "batch": 1,
+    "method": "oqe_suffix",
+    "prediction_mismatches": 0,
+    "rate_max_abs": 0.0
+  },
+  {
+    "device": "cpu",
+    "batch": 1,
+    "method": "single_grouped",
+    "prediction_mismatches": 0,
+    "rate_max_abs": 0.0
+  },
+  {
+    "device": "cpu",
+    "batch": 128,
+    "method": "oqe_generic",
+    "prediction_mismatches": 0,
+    "rate_max_abs": 0.0
+  },
+  {
+    "device": "cpu",
+    "batch": 128,
+    "method": "oqe_suffix",
+    "prediction_mismatches": 0,
+    "rate_max_abs": 0.0
+  },
+  {
+    "device": "cpu",
+    "batch": 128,
+    "method": "single_grouped",
+    "prediction_mismatches": 0,
+    "rate_max_abs": 0.0
+  },
+  {
+    "device": "cuda:0",
+    "batch": 1,
+    "method": "oqe_generic",
+    "prediction_mismatches": 0,
+    "rate_max_abs": 0.0
+  },
+  {
+    "device": "cuda:0",
+    "batch": 1,
+    "method": "oqe_suffix",
+    "prediction_mismatches": 0,
+    "rate_max_abs": 0.0
+  },
+  {
+    "device": "cuda:0",
+    "batch": 1,
+    "method": "single_grouped",
+    "prediction_mismatches": 0,
+    "rate_max_abs": 0.0
+  },
+  {
+    "device": "cuda:0",
+    "batch": 128,
+    "method": "oqe_generic",
+    "prediction_mismatches": 0,
+    "rate_max_abs": 0.0
+  },
+  {
+    "device": "cuda:0",
+    "batch": 128,
+    "method": "oqe_suffix",
+    "prediction_mismatches": 0,
+    "rate_max_abs": 0.0
+  },
+  {
+    "device": "cuda:0",
+    "batch": 128,
+    "method": "single_grouped",
+    "prediction_mismatches": 0,
+    "rate_max_abs": 0.0
+  }
+]

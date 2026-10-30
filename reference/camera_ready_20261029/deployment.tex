@@ -1,0 +1,39 @@
+\begin{table*}[t]
+\centering
+\caption{Joint representation and execution trade-offs: $K=7$, two anchors, Fashion-MNIST.}
+\label{tab:deployment}
+\scriptsize
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lrrrr}
+\toprule
+Encoding & Clean accuracy (\%) & Tail events/scalar & int64 keys, $B=128$ & Packed bound, $B=128$ \\
+\midrule
+OQE & $89.09\pm0.23$ & 1.499 & 0.803 MB & 0.0376 MB \\
+Matched Single-Spike & $89.37\pm0.14$ & 0.431 & 0.803 MB & 0.0376 MB \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrr}
+\toprule
+& \multicolumn{2}{c}{Reconstruction (ms)} & \multicolumn{2}{c}{Full forward (ms)} & GPU extra peak \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Execution path & CPU & GPU & CPU & GPU & allocation (MB) \\
+\midrule
+OQE ordinary & -- & -- & 5.783 / 145.157 & 5.889 / 8.412 & 1.54 / 199.84 \\
+OQE generic grouped & 0.865 / 60.219 & 0.390 / 7.146 & 8.281 / 282.083 & 7.467 / 20.809 & 1.51 / 195.82 \\
+OQE suffix grouped & 0.109 / 9.567 & 0.196 / 1.163 & 9.628 / 232.347 & 6.908 / 14.892 & 1.51 / 195.82 \\
+Single ordinary & -- & -- & 6.284 / 153.565 & 5.363 / 8.336 & 1.54 / 199.84 \\
+Single grouped & 0.083 / 3.334 & 0.114 / 0.623 & 8.742 / 216.579 & 7.413 / 15.342 & 1.51 / 195.82 \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.98\textwidth}\scriptsize
+Each pair is batch 1 / 128. Accuracy: ordinary-forward three-seed mean $\pm$ population standard deviation;
+events: six-step tail, excluding anchors. Timings: same-session medians, CPU 5/GPU 20 repetitions;
+full paths use each encoding\textquotesingle s frozen seed-20261010 model and identical images.
+Reconstruction uses synthetic preformed aggregates; -- means no separate grouped stage.
+GPU extra peak: separately measured peak allocated bytes above the post-reset live baseline, not total device memory.
+Keys: input-class tensor only; packing is a theoretical bound, not implemented ($10^6$ bytes/MB).
+\end{minipage}
+\end{table*}

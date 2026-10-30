@@ -1,8 +1,25 @@
-# OQE V23 reproduction repository
+# OQE reproduction repository (V23 + camera-ready update)
 
 OQE is an ordinal temporal input representation for SNNs that retains the encoder-produced ordinal key for exact route grouping and uses nested temporal supports to enable suffix reconstruction.
 
-This repository accompanies manuscript V23, *OQE: Ordered Temporal Coding for SNN Inputs with Exact Route Grouping and Suffix Reconstruction*. It is a clean reproduction tree: datasets, checkpoints, raw logs, development history, and superseded implementations are intentionally absent.
+This repository accompanies manuscript V23 and its camera-ready revision, *OQE: Ordered Temporal Coding for SNN Inputs with Exact Route Grouping and Suffix Reconstruction*. It is a clean reproduction tree: datasets, checkpoints, training logs, development history, and superseded implementations are intentionally absent. The camera-ready update retains the small raw timing samples needed to reproduce the deployment summary.
+
+## Camera-ready update (2026-10-30)
+
+The update adds a matched five-path CPU/GPU benchmark, incremental GPU allocation,
+all timing repetitions, batch-level equivalence checks, deletion summaries, and a
+portable generator for the joint deployment table. No models were retrained or
+original V23 reference files replaced. See the [camera-ready guide](docs/CAMERA_READY.md).
+
+Regenerate the joint table from checked-in measurements (Python standard library only):
+
+```bash
+python scripts/summarize_camera_ready.py
+```
+
+Code is currently maintained in a private repository. A license has not yet been
+selected; see [LICENSE_PENDING.md](LICENSE_PENDING.md). No open-source license is
+implied by repository visibility.
 
 ## Novelty boundary
 

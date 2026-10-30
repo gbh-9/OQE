@@ -25,6 +25,12 @@ All principal training results use seeds `20261010`, `20261011`, and `20261012`.
 
 ## Key implementation locations
 
+Camera-ready Table VI supersedes the historical deployment timings above with
+`scripts/benchmark_oqe_camera_ready.py`: five paths in one matched session,
+CPU/GPU, batches 1/128, reconstruction/full-forward latency, and separate GPU
+incremental allocation. `scripts/summarize_camera_ready.py` rebuilds the table
+from `reference/camera_ready_20261029/`. See `docs/CAMERA_READY.md` for commands.
+
 - Codebooks, fixed encoder, matched model, shared backbone helpers: `src/oqe_v6.py`
 - Exact grouping, generic reconstruction, suffix reconstruction, and executor paths: `src/oqe_v6_executor.py`
 - Strict anchor construction: `src/oqe_anchor.py`

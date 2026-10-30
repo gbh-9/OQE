@@ -1,0 +1,32 @@
+{
+  "python": "3.13.5 | packaged by Anaconda, Inc. | (main, Jun 12 2025, 16:37:03) [MSC v.1929 64 bit (AMD64)]",
+  "torch": "2.7.1+cu118",
+  "torchvision": "0.22.1+cu118",
+  "platform": "Windows-11-10.0.22631-SP0",
+  "cpu_threads": 10,
+  "cuda_runtime": "11.8",
+  "cudnn": 90100,
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": false,
+  "matmul_tf32": false,
+  "cudnn_tf32": true,
+  "precision": "FP32; no autocast",
+  "training": false,
+  "dataset": "Fashion-MNIST test first B examples",
+  "seed": 20261010,
+  "K": 7,
+  "anchors": 2,
+  "timing_scope": "reset + resident-input forward; excludes data loading, H2D and checkpoint loading",
+  "schedule": "fixed-seed randomized method order per repetition; separate warmups per method",
+  "memory_scope": "separate untimed CUDA pass: peak allocated minus post-reset live baseline; not nvidia-smi or reserved memory",
+  "sources": {
+    "scripts\\benchmark_oqe_camera_ready.py": "b9bd94fbd08da9b86eb14468c4e771bb57581763cb56ed7df8d35957c60df8c0",
+    "src\\oqe_v6.py": "07e923e7281bbba67f747f7c6d88a660e8a4704098538bb6ded77e0599087366",
+    "src\\oqe_v6_executor.py": "8a70e7835452d7dcd91e764ddc8cb1b8be072d798589ebd64495b823d6454a0b",
+    "results\\oqe_v6_main\\checkpoints\\fashion_mnist__oqe__k7__canonical__s20261010__e3.pt": "ef1eda709723634b3b92290f14f9917c6fa38b65ebfea3435c1fb0d87e65f6b7",
+    "results\\oqe_v6_main\\checkpoints\\fashion_mnist__single_hybrid__k7__canonical__s20261010__e3.pt": "7c8c1014440cba0220dc107e0d37e1d60fbe9aba51899e586f4833bd425bdf7f"
+  },
+  "gpu_snapshot_before": "NVIDIA GeForce RTX 4060 Laptop GPU, 546.80, 760 MiB, 24 %",
+  "input_sha256": "5ee7f252481866f5cea102141c04c5fc8d3c235297bc408093b37bed1b27ca44",
+  "gpu_snapshot_after": "NVIDIA GeForce RTX 4060 Laptop GPU, 546.80, 895 MiB, 37 %"
+}
